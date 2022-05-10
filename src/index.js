@@ -1,6 +1,7 @@
 import "./styles.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Light } from "./fundamentals/lights.js";
 
 //THE CONSTRUCTOR RUNS EACH TIME THE INSTANCE IS CREATED
 class SimpleWorld {
@@ -42,20 +43,22 @@ class SimpleWorld {
     this._scene = new THREE.Scene();
 
     //LIGHTS
-    let light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(100, 100, 100);
-    light.target.position.set(0, 0, 0);
-    light.castShadow = true;
-    light.shadow.bias = -0.01;
-    light.shadow.mapSize.width = 2048;
-    light.shadow.mapSize.height = 2048;
-    light.shadow.camera.near = 1.0;
-    light.shadow.camera.far = 500;
-    light.shadow.camera.left = 200;
-    light.shadow.camera.right = -200;
-    light.shadow.camera.top = 200;
-    light.shadow.camera.bottom = -200;
+    // let light = new THREE.DirectionalLight(0xffffff);
+    // light.position.set(100, 100, 100);
+    // light.target.position.set(0, 0, 0);
+    // light.castShadow = true;
+    // light.shadow.bias = -0.01;
+    // light.shadow.mapSize.width = 2048;
+    // light.shadow.mapSize.height = 2048;
+    // light.shadow.camera.near = 1.0;
+    // light.shadow.camera.far = 500;
+    // light.shadow.camera.left = 200;
+    // light.shadow.camera.right = -200;
+    // light.shadow.camera.top = 200;
+    // light.shadow.camera.bottom = -200;
 
+    //light added from a class wiii
+    const light = new Light("white");
     this._scene.add(light);
 
     //IDK IF THIS WORKS
@@ -94,7 +97,14 @@ class SimpleWorld {
     box.castShadow = true;
     box.receiveShadow = true;
     this._scene.add(box);
-
+    const box2 = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 2, 2),
+      new THREE.MeshStandardMaterial({ color: "lightBlue" })
+    );
+    box2.position.set(2, 1, 4);
+    box2.castShadow = true;
+    box2.receiveShadow = true;
+    this._scene.add(box2);
     //CALLS RENDER FUNCTION
     this._RAF();
   }
@@ -108,6 +118,7 @@ class SimpleWorld {
   _RAF() {
     requestAnimationFrame(() => {
       this._threejs.render(this._scene, this._camera);
+      this._OnWindowResize();
       this._RAF();
     });
   }
