@@ -6,7 +6,7 @@ class Light extends THREE.DirectionalLight {
     this.position.set(100, 100, 100);
     this.target.position.set(0, 0, 0);
     this.castShadow = true;
-    this.shadow.bias = -0.005;
+    this.shadow.bias = -0.06;
     this.shadow.mapSize.width = 2048;
     this.shadow.mapSize.height = 2048;
     this.shadow.camera.near = 1.0;
