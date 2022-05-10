@@ -1,6 +1,14 @@
 import "./styles.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Light } from "./fundamentals/lights.js";
+import { Camera } from "./fundamentals/camera.js";
+
+//CONSTANTS
+const fov = 60;
+const aspect = 1920 / 1080;
+const near = 1.0;
+const far = 1000;
 
 //THE CONSTRUCTOR RUNS EACH TIME THE INSTANCE IS CREATED
 class SimpleWorld {
@@ -30,35 +38,16 @@ class SimpleWorld {
       false
     );
 
-    //CAMERA CONSTANTS AND SETUP
-    const fov = 60;
-    const aspect = 1920 / 1080;
-    const near = 1.0;
-    const far = 1000;
-
-    this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this._camera.position.set(75, 20, 0);
+    //CAMERA SETUP
+    this._camera = new Camera(fov, aspect, near, far);
 
     this._scene = new THREE.Scene();
 
-    //LIGHTS
-    let light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(100, 100, 100);
-    light.target.position.set(0, 0, 0);
-    light.castShadow = true;
-    light.shadow.bias = -0.01;
-    light.shadow.mapSize.width = 2048;
-    light.shadow.mapSize.height = 2048;
-    light.shadow.camera.near = 1.0;
-    light.shadow.camera.far = 500;
-    light.shadow.camera.left = 200;
-    light.shadow.camera.right = -200;
-    light.shadow.camera.top = 200;
-    light.shadow.camera.bottom = -200;
-
+    //light added from a class wiii
+    const light = new Light("white");
     this._scene.add(light);
 
-    //IDK IF THIS WORKS
+    //IDK IF THIS WORKS - DOES
     const controls = new OrbitControls(this._camera, this._threejs.domElement);
     controls.target.set(0, 0, 0);
     controls.update();
@@ -94,7 +83,14 @@ class SimpleWorld {
     box.castShadow = true;
     box.receiveShadow = true;
     this._scene.add(box);
-
+    const box2 = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 2, 2),
+      new THREE.MeshStandardMaterial({ color: "lightBlue" })
+    );
+    box2.position.set(2, 1, 4);
+    box2.castShadow = true;
+    box2.receiveShadow = true;
+    this._scene.add(box2);
     //CALLS RENDER FUNCTION
     this._RAF();
   }
@@ -108,6 +104,7 @@ class SimpleWorld {
   _RAF() {
     requestAnimationFrame(() => {
       this._threejs.render(this._scene, this._camera);
+      this._OnWindowResize();
       this._RAF();
     });
   }
